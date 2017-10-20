@@ -1,0 +1,46 @@
+{
+  "name": "hubot-slack-growl",
+  "version": "0.1.0",
+  "description": "Hubot plugin for notify slack message via gntp-send",
+  "main": "index.coffee",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jimmy-Xu/hubot-slack-growl.git"
+  },
+  "keywords": [
+    "hubot",
+    "hubot-scripts",
+    "hubot-slack-growl"
+  ],
+  "author": "Jimmy Xu <xjimmyshcn@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Jimmy-Xu/hubot-slack-growl/issues"
+  },
+  "homepage": "https://github.com/Jimmy-Xu/hubot-slack-growl#readme",
+  "dependencies": {
+    "node-growl": "^0.1.1"
+  },
+  "peerDependencies": {
+    "hubot": "2.x"
+  },
+  "devDependencies": {
+    "chai": "^2.1.1",
+    "coffee-script": "^1.6.3",
+    "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-coffee-jshint": "^2.0.0",
+    "grunt-mocha-test": "^0.12.7",
+    "grunt-release": "^0.11.0",
+    "hubot": "2.x",
+    "matchdep": "^0.3.0",
+    "mocha": "^2.1.0",
+    "sinon": "^1.13.0",
+    "sinon-chai": "^2.7.0",
+    "node-growl": "^0.1.1"
+  }
+}
