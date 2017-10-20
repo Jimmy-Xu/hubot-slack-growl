@@ -1,6 +1,6 @@
 {
   "name": "hubot-slack-growl",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Hubot plugin for notify slack message via gntp-send",
   "main": "index.coffee",
   "scripts": {
@@ -13,7 +13,8 @@
   "keywords": [
     "hubot",
     "hubot-scripts",
-    "hubot-slack-growl"
+    "hubot-slack-growl",
+    "node-growl"
   ],
   "author": "Jimmy Xu <xjimmyshcn@gmail.com>",
   "license": "MIT",

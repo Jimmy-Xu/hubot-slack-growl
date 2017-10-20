@@ -12,7 +12,8 @@ Hubot plugin for notify slack message via growl
 
 # Env
 
-- HUBOT_MYNAME(slack name)
+- HUBOT_SLACK_MYNAME
+- HUBOT_SLACK_KEYWORDS
 - HUBOT_GNTP_SERVER
 - HUBOT_GNTP_PASSWORD
 
