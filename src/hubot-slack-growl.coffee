@@ -11,13 +11,16 @@
 #   HUBOT_GNTP_PASSWORD
 #
 # Commands:
-#   hubot slack-growl add_keywords <key1,key2...> - Append new sensitive words
-#   hubot slack-growl set_keywords <key1,key2...> - Change the whole sensitive words
-#   hubot slack-growl get_keywords                - List current sensitive words
+#
 #
 # Author:
 #   Jimmy Xu <xjimmyshcn@gmail.com>
 #
+
+# Hidden
+#   hubot slack-growl add_keywords <key1,key2...> - Append new sensitive words
+#   hubot slack-growl set_keywords <key1,key2...> - Change the whole sensitive words
+#   hubot slack-growl get_keywords                - List current sensitive words
 
 nodeGrowl = require 'node-growl'
 
@@ -50,11 +53,11 @@ module.exports = (robot) ->
     _msgContent = "current keywords is `#{keywords}`"
     response.reply _msgContent
     robot.logger.info "[Reply To #{_senderName}] #{_msgContent}"
-    ###
-    # send direct message
-    room = robot.adapter.client.rtm.dataStore.getDMByName response.message.user.name
-    robot.messageRoom room.id, msgContent
-    ###
+  ###
+  # send direct message
+  room = robot.adapter.client.rtm.dataStore.getDMByName response.message.user.name
+  robot.messageRoom room.id, msgContent
+  ###
 
 
   #==============================
@@ -97,35 +100,41 @@ module.exports = (robot) ->
   #==============================
   # watch keyword
   #==============================
-  robot.listen(
-    (msg) ->
-# ignore invalid message
-      if not msg.text
-        robot.logger.debug ">[Ignore] empty message"
-        return false
-      if robot.adapterName isnt "slack"
-        robot.logger.warn ">[Ignore] hubot adapter should be slack, current is #{robot.adapterName}"
-        return false
-      _regSet = /hubot.*slack-growl set_keywords (.*)/i
-      _regAdd = /hubot.*slack-growl add_keywords (.*)/i
-      _regGet = /hubot.*slack-growl get_keywords/i
-      if _regSet.test(msg.text) or _regGet.test(msg.text) or _regAdd.test(msg.text)
-        robot.logger.debug ">[Ignore] this is respond message '#{msg.text}'"
-        return false
-      # check keywords in message
-      _found = keywords.filter (x) ->
-        _reg = new RegExp(x, 'i')
-        _reg.test msg.text
-      if _found.length is 0
-        robot.logger.debug ">[Ignore] keywords isn't matched: #{_found}"
-        return false
-      return true
-    (resp) ->
-      _room = robot.adapter.client.rtm.dataStore.getChannelGroupOrDMById resp.message.user.room
-      _msgTitle = "From Slack[\##{_room.name} #{resp.message.user.name}]"
-      # send notify to growl
-      nodeGrowl _msgTitle, resp.message.text, gntpOpts, (text) ->
-        if text isnt null
-          robot.logger.warn ">[room:##{_room.name} sender:#{resp.message.user.name}] gntp-send failed(#{text})"
-        robot.logger.debug ">gntp-send OK"
-  )
+  robot.catchAll (resp) ->
+    if not resp.message.text
+      return
+    # check adapter
+    if robot.adapterName isnt "slack"
+      robot.logger.warn ">[Ignore] hubot adapter should be slack, current is #{robot.adapterName}"
+      return
+    _regSet = /hubot.*slack-growl set_keywords (.*)/i
+    _regAdd = /hubot.*slack-growl add_keywords (.*)/i
+    _regGet = /hubot.*slack-growl get_keywords/i
+    if _regSet.test(resp.message.text) or _regGet.test(resp.message.text) or _regAdd.test(resp.message.text)
+      robot.logger.debug ">[Ignore] this is respond message '#{resp.message.text}'"
+      return
+    # resolve room and message
+    _room = robot.adapter.client.rtm.dataStore.getChannelGroupOrDMById resp.message.user.room
+    _msgTitle = "From Slack[\##{_room.name} #{resp.message.user.name}]"
+    _msgContent = resp.message.text
+    # check keywords in message
+    suffix = "[gen]"
+    _found = keywords.filter (x) ->
+      _reg = new RegExp(x, 'i')
+      _reg.test resp.message.text
+    if _found.length > 0
+      robot.logger.debug ">keywords is matched: #{_found}"
+      suffix = "[key]"
+    else
+      robot.logger.debug ">keywords isn't matched: #{_found}"
+    if _room.name is "DM"
+      suffix = "[dm]"
+    # send notify to growl
+    _gntpOpts =
+      server: gntpOpts.server
+      password: gntpOpts.password
+      appname: gntpOpts.appname + suffix
+    nodeGrowl _msgTitle, _msgContent, _gntpOpts, (text) ->
+      if text isnt null
+        robot.logger.warn ">[room:\##{_room.name} sender:#{resp.message.user.name}] gntp-send failed(#{text})"
+      robot.logger.debug ">gntp-send OK"
