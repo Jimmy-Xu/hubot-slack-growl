@@ -42,7 +42,7 @@ module.exports = (robot) ->
   #==============================
   robot.respond /slack-growl get_keywords/i, (response) ->
     if robot.adapterName isnt "slack"
-      robot.logger.warn ">[Ignore] hubot adapter should be slack, current is #{robot.adapterName}"
+      robot.logger.info ">[Ignore] hubot adapter should be slack, current is #{robot.adapterName}"
       return
     _senderName = response.message.user.name
     robot.logger.debug "#{_senderName} wants to get current keywords"
@@ -65,7 +65,7 @@ module.exports = (robot) ->
   #==============================
   robot.respond /slack-growl set_keywords (.*)/i, (response) ->
     if robot.adapterName isnt "slack"
-      robot.logger.warn ">[Ignore] hubot adapter should be slack, current is #{robot.adapterName}"
+      robot.logger.info ">[Ignore] hubot adapter should be slack, current is #{robot.adapterName}"
       return
     _senderName = response.message.user.name
     robot.logger.debug "#{_senderName} wants to change keywords to: #{response.match[1]}"
@@ -83,7 +83,7 @@ module.exports = (robot) ->
   #==============================
   robot.respond /slack-growl add_keywords (.*)/i, (response) ->
     if robot.adapterName isnt "slack"
-      robot.logger.warn ">[Ignore] hubot adapter should be slack, current is #{robot.adapterName}"
+      robot.logger.info ">[Ignore] hubot adapter should be slack, current is #{robot.adapterName}"
       return
     _senderName = response.message.user.name
     robot.logger.debug "#{_senderName} wants to append keywords: #{response.match[1]}"
@@ -105,7 +105,7 @@ module.exports = (robot) ->
       return
     # check adapter
     if robot.adapterName isnt "slack"
-      robot.logger.warn ">[Ignore] hubot adapter should be slack, current is #{robot.adapterName}"
+      robot.logger.info ">[Ignore] hubot adapter should be slack, current is #{robot.adapterName}"
       return
     _regSet = /hubot.*slack-growl set_keywords (.*)/i
     _regAdd = /hubot.*slack-growl add_keywords (.*)/i
@@ -136,5 +136,6 @@ module.exports = (robot) ->
       appname: gntpOpts.appname + suffix
     nodeGrowl _msgTitle, _msgContent, _gntpOpts, (text) ->
       if text isnt null
-        robot.logger.warn ">[room:\##{_room.name} sender:#{resp.message.user.name}] gntp-send failed(#{text})"
-      robot.logger.debug ">gntp-send OK"
+        robot.logger.info ">[room:\##{_room.name} sender:#{resp.message.user.name}] gntp-send failed(#{text})"
+      else
+        robot.logger.info ">gntp-send OK"
